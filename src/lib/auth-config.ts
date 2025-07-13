@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
           membershipNumber: user[0].membershipNumber,
           creditScore: user[0].creditScore,
           isVerified: user[0].isVerified,
+          phone: user[0].phone,
         };
       },
     }),
@@ -61,6 +62,7 @@ export const authOptions: NextAuthOptions = {
         token.membershipNumber = user.membershipNumber;
         token.creditScore = user.creditScore;
         token.isVerified = user.isVerified;
+        token.phone = user.phone;
       }
       return token;
     },
@@ -71,12 +73,12 @@ export const authOptions: NextAuthOptions = {
         session.user.membershipNumber = token.membershipNumber as string;
         session.user.creditScore = token.creditScore as number;
         session.user.isVerified = token.isVerified as boolean;
+        session.user.phone = token.phone as string;
       }
       return session;
     },
   },
   pages: {
     signIn: '/auth/login',
-    signUp: '/auth/register',
   },
 };
