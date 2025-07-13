@@ -6,10 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Users, 
-  Banknote, 
-  CreditCard, 
+import {
+  Users,
+  Banknote,
+  CreditCard,
   TrendingUp,
   AlertCircle,
   CheckCircle,
@@ -23,6 +23,29 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { authService } from '@/lib/auth';
 import { db } from '@/lib/database';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, PieChart as PieChartComponent, Pie, Cell, BarChart, Bar } from 'recharts';
+
+// Type definitions for chart data
+interface MemberGrowthData {
+  month: string;
+  members: number;
+}
+
+interface SavingsGrowthData {
+  month: string;
+  amount: number;
+}
+
+interface LoanDistributionData {
+  purpose: string;
+  count: number;
+  percentage: number;
+}
+
+interface ChartData {
+  memberGrowth: MemberGrowthData[];
+  savingsGrowth: SavingsGrowthData[];
+  loanDistribution: LoanDistributionData[];
+}
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({
@@ -41,7 +64,7 @@ export default function AdminDashboardPage() {
   
   const [recentMembers, setRecentMembers] = useState<any[]>([]);
   const [pendingLoans, setPendingLoans] = useState<any[]>([]);
-  const [chartData, setChartData] = useState({
+  const [chartData, setChartData] = useState<ChartData>({
     memberGrowth: [],
     savingsGrowth: [],
     loanDistribution: []
