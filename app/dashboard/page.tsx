@@ -80,22 +80,27 @@ export default function DashboardPage() {
     setContributionChart(last6Months);
 
     // Get recent activity
-    const recentContributions = contributions.slice(-3).map(c => ({
-      type: 'contribution',
-      description: `Contribution of KSh ${c.amount.toLocaleString()}`,
-      date: c.date,
-      amount: c.amount
-    }));
+    const recentContributions = contributions.slice(-3)
+      .filter(c => c.date) // Filter out items without dates
+      .map(c => ({
+        type: 'contribution',
+        description: `Contribution of KSh ${c.amount.toLocaleString()}`,
+        date: c.date,
+        amount: c.amount
+      }));
 
-    const recentLoanPayments = activeLoans.slice(-2).map(l => ({
-      type: 'loan',
-      description: `Loan payment due: KSh ${l.monthlyPayment.toLocaleString()}`,
-      date: l.nextPaymentDate,
-      amount: l.monthlyPayment
-    }));
+    const recentLoanPayments = activeLoans.slice(-2)
+      .filter(l => l.nextPaymentDate) // Filter out items without dates
+      .map(l => ({
+        type: 'loan',
+        description: `Loan payment due: KSh ${l.monthlyPayment.toLocaleString()}`,
+        date: l.nextPaymentDate,
+        amount: l.monthlyPayment
+      }));
 
     setRecentActivity([...recentContributions, ...recentLoanPayments]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .filter(item => item.date) // Additional safety filter
+      .sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime())
       .slice(0, 5));
 
   }, [user]);
