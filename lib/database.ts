@@ -12,13 +12,22 @@ class Database {
 
   private get<T>(key: string): T[] {
     if (!this.storage) return [];
-    const data = this.storage.getItem(key);
-    return data ? JSON.parse(data) : [];
+    try {
+      const data = this.storage.getItem(key);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error(`Error reading from localStorage for key ${key}:`, error);
+      return [];
+    }
   }
 
   private set<T>(key: string, data: T[]): void {
     if (!this.storage) return;
-    this.storage.setItem(key, JSON.stringify(data));
+    try {
+      this.storage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.error(`Error writing to localStorage for key ${key}:`, error);
+    }
   }
 
   // Users

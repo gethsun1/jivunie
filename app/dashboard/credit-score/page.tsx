@@ -29,33 +29,39 @@ export default function CreditScorePage() {
   const [scoreBreakdown, setScoreBreakdown] = useState<any[]>([]);
   const [improvements, setImprovements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
-  const user = authService.getCurrentUser();
+  const user = typeof window !== 'undefined' ? authService.getCurrentUser() : null;
 
   useEffect(() => {
-    if (!user) return;
-    
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || !user) return;
+
     loadCreditScoreData();
-  }, [user]);
+  }, [mounted, user]);
 
   const loadCreditScoreData = () => {
     if (!user) return;
 
-    // Update and get current credit score
-    const currentScore = CreditScoringService.updateCreditScore(user.id, 'Credit score dashboard view');
-    setCreditScore(currentScore);
+    try {
+      // Update and get current credit score
+      const currentScore = CreditScoringService.updateCreditScore(user.id, 'Credit score dashboard view');
+      setCreditScore(currentScore);
 
-    // Get score history
-    const history = db.getCreditScoreHistory(user.id)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .slice(-12) // Last 12 entries
-      .map(entry => ({
-        date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        score: entry.score,
-        change: entry.change
-      }));
-    
-    setScoreHistory(history);
+      // Get score history
+      const history = db.getCreditScoreHistory(user.id)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(-12) // Last 12 entries
+        .map(entry => ({
+          date: new Date(entry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          score: entry.score,
+          change: entry.change
+        }));
+
+      setScoreHistory(history);
 
     // Calculate score breakdown
     const contributions = db.getContributions(user.id).filter(c => c.status === 'completed');
@@ -91,11 +97,20 @@ export default function CreditScorePage() {
 
     setScoreBreakdown(breakdown);
 
-    // Generate improvement suggestions
-    const suggestions = generateImprovementSuggestions(currentScore, contributions, loans);
-    setImprovements(suggestions);
+      // Generate improvement suggestions
+      const suggestions = generateImprovementSuggestions(currentScore, contributions, loans);
+      setImprovements(suggestions);
 
-    setLoading(false);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error loading credit score data:', error);
+      // Set default values on error
+      setCreditScore(300);
+      setScoreHistory([]);
+      setScoreBreakdown([]);
+      setImprovements([]);
+      setLoading(false);
+    }
   };
 
   const calculatePaymentHistoryScore = (loans: any[], payments: any[]) => {
@@ -212,7 +227,7 @@ export default function CreditScorePage() {
     return '#EF4444';
   };
 
-  if (!user) return null;
+  if (!mounted || !user) return null;
 
   const category = getCreditScoreCategory(creditScore);
   const scorePercentage = ((creditScore - 300) / (850 - 300)) * 100;
@@ -425,9 +440,11 @@ export default function CreditScorePage() {
                       <div className="text-sm text-gray-600 dark:text-gray-300">{range.description}</div>
                     </div>
                   </div>
-                  {creditScore >= parseInt(range.range.split('-')[0]) && creditScore <= parseInt(range.range.split('-')[1]) && (
-                    <Badge variant="outline">Your Range</Badge>
-                  )}
+                  {(() => {
+                    const [min, max] = range.range.split('-').map(Number);
+                    const isInRange = creditScore >= min && creditScore <= max;
+                    return isInRange ? <Badge variant="outline">Your Range</Badge> : null;
+                  })()}
                 </div>
               ))}
             </div>
