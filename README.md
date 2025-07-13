@@ -266,3 +266,6 @@ For support, email support@jivunie.co.ke or create an issue in the GitHub reposi
 ---
 
 **Jivunie SACCO** - Empowering communities through digital financial cooperation.
+
+---
+*Last updated: 2025-01-13*
