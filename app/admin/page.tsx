@@ -179,16 +179,16 @@ export default function AdminDashboardPage() {
     }
 
     // Loan distribution by purpose
-    const loanPurposes = loans.reduce((acc: any, loan: any) => {
+    const loanPurposes = loans.reduce((acc: Record<string, number>, loan: any) => {
       const purpose = loan.purpose || 'Other';
       acc[purpose] = (acc[purpose] || 0) + 1;
       return acc;
-    }, {});
+    }, {} as Record<string, number>);
 
-    const loanDistribution = Object.entries(loanPurposes).map(([purpose, count]) => ({
+    const loanDistribution: LoanDistributionData[] = Object.entries(loanPurposes).map(([purpose, count]) => ({
       purpose,
-      count,
-      percentage: ((count as number) / loans.length) * 100
+      count: count as number,
+      percentage: (count / loans.length) * 100
     }));
 
     setChartData({
