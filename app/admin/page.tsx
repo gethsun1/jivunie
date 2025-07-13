@@ -57,8 +57,8 @@ export default function AdminDashboardPage() {
   const loadDashboardData = () => {
     // Get all system data
     const allUsers = db.getUsers();
-    const allContributions = db.get<any>('contributions') || [];
-    const allLoans = db.get<any>('loans') || [];
+    const allContributions = db.getContributions() || [];
+    const allLoans = db.getLoans() || [];
 
     // Calculate basic stats
     const members = allUsers.filter(u => u.role === 'member');
@@ -176,7 +176,7 @@ export default function AdminDashboardPage() {
   };
 
   const approveLoan = async (loanId: string) => {
-    const loan = db.get<any>('loans').find((l: any) => l.id === loanId);
+    const loan = db.getLoans().find((l: any) => l.id === loanId);
     if (!loan) return;
 
     db.updateLoan(loanId, {
@@ -198,7 +198,7 @@ export default function AdminDashboardPage() {
   };
 
   const rejectLoan = async (loanId: string) => {
-    const loan = db.get<any>('loans').find((l: any) => l.id === loanId);
+    const loan = db.getLoans().find((l: any) => l.id === loanId);
     if (!loan) return;
 
     db.updateLoan(loanId, {
