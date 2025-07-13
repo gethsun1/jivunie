@@ -12,16 +12,17 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { 
-  Plus, 
-  CreditCard, 
+import {
+  Plus,
+  CreditCard,
   CheckCircle,
   Clock,
   AlertCircle,
   TrendingUp,
   Calculator,
   FileText,
-  DollarSign
+  DollarSign,
+  Calendar
 } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { authService } from '@/lib/auth';
