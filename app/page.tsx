@@ -106,9 +106,9 @@ export default function HomePage() {
                 Start Saving Today
               </Button>
             </Link>
-            <Link href="/demo">
+            <Link href="/auth/login">
               <Button size="lg" variant="outline">
-                View Demo
+                Try with Demo Account
               </Button>
             </Link>
           </div>
